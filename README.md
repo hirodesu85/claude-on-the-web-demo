@@ -1,52 +1,48 @@
 # claude-on-the-web-demo
 
-Claude Code on the Web を活用するためのデモ・テンプレートリポジトリです。
+**スマホ一台でiOSアプリを開発できるか？** を検証するリポジトリです。
 
-## このプロジェクトで実現したいこと
+## 目的
 
-このリポジトリは、**Claude Code on the Web** をすぐに使い始めるためのスターターテンプレートとして機能することを目的としています。
+Mac不要・スマホのみでSwift/iOSアプリ開発を完結させるワークフローを構築し、その実現可能性を検証します。
 
-### 主な目標
+初期設定（Apple Developer登録・証明書作成など）にはMacが必要になる場合がありますが、**それ以降の開発はスマホだけで進める**ことを目指します。
 
-1. **Claude Code on the Web のセットアップ方法を示す**
-   - ブラウザ上で Claude Code を使用する際に必要な設定を整備する
-   - SessionStart フックを使って、セッション開始時に環境を自動準備する
-
-2. **再現性のある開発環境を提供する**
-   - どのセッションでも同じ環境が立ち上がるよう、起動フックで環境構築を自動化する
-   - テスト・リンターなどのツールがすぐに使える状態にする
-
-3. **Claude Code on the Web のベストプラクティスを示す**
-   - `.claude/hooks/session-start.sh` による依存関係インストールの自動化
-   - `.claude/settings.json` によるフックの登録方法
-
-## プロジェクト構成
+## 想定ワークフロー
 
 ```
-.
-├── README.md
-└── .claude/
-    ├── settings.json          # Claude Code の設定ファイル
-    └── hooks/
-        └── session-start.sh   # セッション開始時に実行されるフック
+スマホ（Claude Code on the Web）
+  ↓ Swiftコードを書く
+GitHub へ Push
+  ↓
+GitHub Actions（macOS ランナー）
+  ↓ Xcode でビルド
+TestFlight へ配布
+  ↓
+同じスマホで動作確認
 ```
 
-## セットアップ
+## 使用ツール・サービス
 
-このリポジトリを Claude Code on the Web で使用する場合、SessionStart フックが自動的に実行され、環境が準備されます。
+| 用途 | ツール |
+|------|--------|
+| コーディング | [Claude Code on the Web](https://claude.ai/code) |
+| バージョン管理 | GitHub |
+| ビルド | GitHub Actions（macOS ランナー） |
+| 配布・テスト | TestFlight |
 
-### SessionStart フック
+## 検証したいこと
 
-`.claude/hooks/session-start.sh` は、Claude Code on the Web のセッション開始時に自動実行されます。
-フックは `CLAUDE_CODE_REMOTE=true` の環境でのみ動作します（ローカル環境では何もしません）。
+- [ ] Claude Code on the Web でSwiftコードを書けるか
+- [ ] GitHub Actions でiOSアプリをビルド・署名できるか
+- [ ] TestFlight を通じてスマホに配布できるか
+- [ ] 上記のサイクルをスマホだけで回せるか
 
-## 使い方
+## 検証用アプリ
 
-1. このリポジトリをフォークまたはクローンする
-2. `.claude/hooks/session-start.sh` にプロジェクト固有の依存関係インストールコマンドを追記する
-3. Claude Code on the Web でリポジトリを開くと、フックが自動的に実行される
+ワークフローの検証が目的のため、アプリの内容はシンプルなもの（Hello Worldレベル）で構いません。
 
-## 関連リンク
+## 課題・制限事項
 
-- [Claude Code ドキュメント](https://docs.anthropic.com/claude-code)
-- [Claude Code on the Web について](https://claude.ai/code)
+- **初期設定**：Apple Developer証明書・プロビジョニングプロファイルの作成は初回のみMacが必要になる可能性あり
+- **Xcode**：ビルドはGitHub Actionsに委ねるため、ローカルでの実機デバッグは不可

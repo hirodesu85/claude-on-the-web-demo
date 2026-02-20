@@ -1,0 +1,55 @@
+default_platform(:ios)
+
+platform :ios do
+
+  desc "TestFlightにビルドをアップロードする"
+  lane :beta do
+
+    # App Store Connect API 認証設定
+    api_key = app_store_connect_api_key(
+      key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_API_ISSUER_ID"],
+      key_content: ENV["APP_STORE_CONNECT_API_KEY_CONTENT"],
+      is_key_content_base64: false,
+      in_house: false
+    )
+
+    # Match で証明書・プロビジョニングプロファイルを同期
+    match(
+      type: "appstore",
+      app_identifier: "com.hirodesu85.HelloWorldDemo",
+      api_key: api_key,
+      readonly: true
+    )
+
+    # TestFlight のビルド番号を自動インクリメント
+    increment_build_number(
+      build_number: latest_testflight_build_number(
+        api_key: api_key,
+        initial_build_number: 0
+      ) + 1,
+      xcodeproj: "HelloWorldDemo.xcodeproj"
+    )
+
+    # アプリをビルド
+    build_app(
+      scheme: "HelloWorldDemo",
+      project: "HelloWorldDemo.xcodeproj",
+      configuration: "Release",
+      export_method: "app-store",
+      export_options: {
+        provisioningProfiles: {
+          "com.hirodesu85.HelloWorldDemo" => "match AppStore com.hirodesu85.HelloWorldDemo"
+        }
+      }
+    )
+
+    # TestFlight にアップロード（処理完了を待たない）
+    upload_to_testflight(
+      api_key: api_key,
+      skip_waiting_for_build_processing: true
+    )
+
+  end
+
+end

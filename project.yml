@@ -1,0 +1,34 @@
+name: HelloWorldDemo
+options:
+  bundleIdPrefix: com.hirodesu85
+  deploymentTarget:
+    iOS: "16.0"
+  xcodeVersion: "16.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+
+targets:
+  HelloWorldDemo:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - path: HelloWorldDemo
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.hirodesu85.HelloWorldDemo
+        INFOPLIST_FILE: HelloWorldDemo/Info.plist
+        CODE_SIGN_STYLE: Manual
+        DEVELOPMENT_TEAM: $(DEVELOPMENT_TEAM)
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+      configs:
+        Debug:
+          CODE_SIGN_IDENTITY: "Apple Development"
+          CODE_SIGN_STYLE: Automatic
+        Release:
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+          PROVISIONING_PROFILE_SPECIFIER: "match AppStore com.hirodesu85.HelloWorldDemo"
